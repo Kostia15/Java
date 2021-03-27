@@ -1,0 +1,94 @@
+package tester;
+
+import java.util.Scanner;
+
+public class test {
+
+	public static void main(String[] args) {
+		/*  Написано студентом УжНУ Гнітецьким Костянтином
+		 *  Для вводі виористовуйте число#системи
+		 *  Приклад: 101.11#2
+		 */
+		Scanner scan = new Scanner(System.in);
+		String input = scan.next();
+		int system=10;
+		
+		//Беремо систему
+		if(input.contains("#")) { 
+		system = Integer.valueOf(input.substring(input.indexOf("#")+1));
+		}else {
+			input+="#10";
+		}  
+		
+		//Шукаємо число в 10 системі
+		double decimal=0;
+		String a="";
+		if(input.contains(".")) {
+			a = input.substring(0,input.indexOf("."));}else {a = input.substring(0,input.indexOf("#"));}
+		for(int i=0;i<a.length();i++) { 
+			decimal+=Math.pow(system,String.valueOf(a).length()-i-1)*getNumberOfHex(input.substring(i,i+1));
+		}
+		//Беремо дроб
+		if(input.contains(".")) {
+			a = input.substring(input.indexOf(".")+1,input.indexOf("#"));
+			for(int i=0;i<a.length();i++) { //JAVA FOREVER
+				decimal+=Math.pow(system,(i*-1)-1)*getNumberOfHex(a.substring(i,i+1));
+			}
+		}
+		System.out.println("Binary: "+getAnySystem(decimal,2));
+		System.out.println("Octal: "+getAnySystem(decimal,8));
+		System.out.println("Decimal: "+decimal);
+		System.out.println("Hex: "+getAnySystem(decimal,16));
+	}	
+	
+	//Метод для цифр
+	public static int getNumberOfHex(String a) {
+		switch(a) {
+		case "a":return 10;
+		case "b":return 11;
+		case "c":return 12;
+		case "d":return 13;
+		case "e":return 14;
+		case "f":return 15;
+		}
+		return Integer.valueOf(a);
+		}
+	
+	//Метод для букв
+	public static String getSymOfHex(int a) {
+		switch(a) {
+		case 10:return "a";
+		case 11:return "b";
+		case 12:return "c";
+		case 13:return "d";
+		case 14:return "e";
+		case 15:return "f";
+		}
+		return String.valueOf(a);
+		}
+	
+	//Метод для перевведння з 10 системи в всі інші
+	public static String getAnySystem(double decimal, int system){
+		String result="";
+		String a ="";
+		if(String.valueOf(decimal).contains(".")) {
+			a=String.valueOf(decimal).substring(0,String.valueOf(decimal).indexOf("."));
+		}else {
+			a=String.valueOf(decimal);
+		} 
+		while(Integer.valueOf(a)>0) {
+			result=getSymOfHex(Integer.valueOf(a)%system)+result;
+			a=String.valueOf(Integer.valueOf(a)/system);
+		} //Дроби
+		if(String.valueOf(decimal).contains(".")) {
+			result+=".";
+			a="0."+String.valueOf(decimal).substring(String.valueOf(decimal).indexOf(".")+1);
+			while(Double.valueOf(a)>0) { //JAVA FOREVER
+				a=String.valueOf(Double.valueOf(a)*system);
+				result+=getSymOfHex(Integer.valueOf(a.substring(0,a.indexOf("."))));
+				a="0."+a.substring(a.indexOf(".")+1);
+			}
+		}
+		return result;
+	}
+}
